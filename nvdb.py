@@ -4,6 +4,9 @@ import json
 import requests
 import csv
 
+# Uncomment to silent those unverified https-request warnings
+requests.packages.urllib3.disable_warnings() 
+
 class Objekttyper:
     """Klasse som håndterer en liste med objekttyper:
     https://www.vegvesen.no/nvdb/api/dokumentasjon/datakatalog
