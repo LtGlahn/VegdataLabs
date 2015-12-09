@@ -2,11 +2,17 @@ Et verktøyskriv med klasser, funksjoner og script som benytter data fra
 Nasjonal vegdatabank (NVDB) API: https://www.vegvesen.no/nvdb/api/
 
 nvdb.py:
-Modul med grunnleggende klasser og funksjoner.
+Modul med grunnleggende klasser og funksjoner. 
 
 tunneler_med_ulykker.py:
 Script som finner alle trafikkulykker som har skjedd inne i tunneler, og 
 summerer dem sammen i en csv-fil. En rad per tunnel. Er avhengig av nvdb.py. 
+Vær oppmerksom på at spørringer med veglenker som geografisk lokasjon, tar 
+lang tid sammenlignet med andre spørringer mot APIet.
+
+tunneler_med_trafikkmengde.py:
+Script som finner trafikkmengde per tunnelløp, og 
+summerer dem sammen i en csv-fil. En rad per tunnelløp. Er avhengig av nvdb.py. 
 Vær oppmerksom på at spørringer med veglenker som geografisk lokasjon, tar 
 lang tid sammenlignet med andre spørringer mot APIet.
 
@@ -22,6 +28,9 @@ lokasjon = {'fylke': [17]}
 
 Finn alle forekomster i hele landet:
 lokasjon = {'region': [1,2,3,4,5]}
+
+Om du synes advarselen om ugyldig SSL-sertifikat er irriterende: 
+Kommenter inn linje 8 i nvdb.py
 
 -----------------------------------------------------------------------------
 
