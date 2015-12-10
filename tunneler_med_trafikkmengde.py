@@ -29,6 +29,7 @@ for tunnellop in alletunnellop.objekter():
     veglenker = []
     tunnel = ''
     trafikkmengdeID = []
+    vegnummer = []
 
     try:
         tunnellop.assosiasjoner(581)
@@ -44,12 +45,20 @@ for tunnellop in alletunnellop.objekter():
             else:
                 pass
                 #row['lengde'] += tunnellop.lengde()
-                    
+        
         if tunnellop.veglenker() not in veglenker:
             veglenker += tunnellop.veglenker()
-        
+                    
         if not tunnel: 
             logger.warning('Tunnelløpå (# %s) har ingen morobjekt-tunneller' % tunnellop.id) 
+
+    try: 
+        for vegref in tunnellop.data['lokasjon']['vegReferanser']:
+            nr = vegref['kategori'] + vegref['status'] + str(vegref['nummer'])
+            if nr not in vegnummer: 
+                vegnummer.append( nr) 
+    except KeyError: 
+        logger.warning('tunnellop (# %s) har ingen vegreferanser' % tunnellop.id)    
             
     if veglenker:
         objekttyper = [{
@@ -93,17 +102,18 @@ for tunnellop in alletunnellop.objekter():
     tunnellopID = tunnellop.id
     trafikkmengdeID = ",".join(trafikkmengdeID)
     aadt = ",".join( aadt) 
-    hgv = ",".join( aar) 
+    hgv = ",".join( hgv) 
     aar = ",".join( aar) 
+    vegnr = ",".join( vegnummer ) 
 
     csv_row = [
-        tunnelnavn, tunnellopNavn, tunnellopID, fylke, kommune, skiltet_lengde, lengde, 
+        tunnelnavn, tunnellopNavn, vegnr, tunnellopID, fylke, kommune, skiltet_lengde, lengde, 
         parallelle_lop, aadt, hgv, aar, trafikkmengdeID
     ]
     csv_list.append(csv_row)
     
 csv_header = [
-    u'Tunnelnavn', u'Tunnelløp navn', u'Tunnelløp ID', u'Fylke', u'Kommune', u'Skiltet lengde tunnel', u'Lengde tunnelløp', 
+    u'Tunnelnavn', u'Tunnelløp navn', u'Vegnummer', u'Tunnelløp ID', u'Fylke', u'Kommune', u'Skiltet lengde tunnel', u'Lengde tunnelløp', 
     u'Antall parallelle hovedløp', 'AADT', u'Andel tunge kjøretøy', u'Gjelder for år', u'Trafikkmengde ID'
 ] 
 csv_list.insert(0, csv_header)
