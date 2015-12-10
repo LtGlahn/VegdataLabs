@@ -5,7 +5,7 @@ import requests
 import csv
 
 # Uncomment to silent those unverified https-request warnings
-# requests.packages.urllib3.disable_warnings() 
+requests.packages.urllib3.disable_warnings() 
 
 class Objekttyper:
     """Klasse som håndterer en liste med objekttyper:
@@ -62,7 +62,7 @@ class Objekt:
                 'fra': veglenke['fra'], 
                 'til': veglenke['til']
             }
-        veglenker.append(veglenkerad)        
+            veglenker.append(veglenkerad)        
         return veglenker
             
     def lengde(self):
