@@ -12,7 +12,7 @@ requests_log = logging.getLogger("requests")
 requests_log.setLevel(logging.WARNING)
 
 objekttyper = [{'id': 67, 'antall': 10000}]
-lokasjon = {'fylke': [3]}
+lokasjon = {'region': [1, 2, 3, 4, 5]}
 alletunnellop = query_search(objekttyper, lokasjon)
 
 csv_list = []
@@ -84,16 +84,17 @@ for tunnellop in alletunnellop.objekter():
         
     else:
         logger.warning('tunnellop (# %s) har ingen veglenker' % tunnellop.id)
-                
-    try:
-        tunnelnavn = tunnel.egenskap(5225)
-        skiltet_lengde = tunnel.egenskap(8945)
-        parallelle_lop = tunnel.egenskap(3947)
-    except KeyError:
-        logger.error('Tunnel (# %s) har ingen egenskaper' % tunnel.id)
-        skiltetlengde = None
-        tunnelnavn = None
-        antlop = None
+    
+    if tunnel: 
+        try:
+            tunnelnavn = tunnel.egenskap(5225)
+            skiltet_lengde = tunnel.egenskap(8945)
+            parallelle_lop = tunnel.egenskap(3947)
+        except (KeyError):
+            logger.error('Tunnel (# %s) har ingen egenskaper' % tunnel.id)
+            skiltetlengde = None
+            tunnelnavn = None
+            antlop = None
     
     fylke = tunnellop.lokasjon('fylke')
     kommune = tunnellop.lokasjon('kommune')
