@@ -5,7 +5,7 @@ import requests
 import csv
 
 # Uncomment to silent those unverified https-request warnings
-requests.packages.urllib3.disable_warnings() 
+# requests.packages.urllib3.disable_warnings() 
 
 class Objekttyper:
     """Klasse som håndterer en liste med objekttyper:
@@ -60,7 +60,8 @@ class Objekt:
             veglenkerad = {
                 'id': veglenke['id'],
                 'fra': veglenke['fra'], 
-                'til': veglenke['til']
+                'til': veglenke['til'],
+                'direction' : veglenke['direction']
             }
             veglenker.append(veglenkerad)        
         return veglenker
@@ -90,6 +91,20 @@ class Objekt:
                 elif enum and egenskap['enumVerdi']['id'] == enum:
                     verdi = egenskap['verdi']
         return verdi
+
+    def geometri(self, geometritype='geometriWgs84'): 
+        """Returnerer koordinatene til vegobjektet. Default er lengde-breddegrad 
+        (geometriWgs84). Andre mulige typer er geometriForenkletWgs84, 
+        geometriUtm33 og geometriForenkletWgs84.
+        
+        Data returneres som Well-Known text (WKT), ref 
+        https://en.wikipedia.org/wiki/Well-known_text
+        Som regel brukes POINT, LINESTRING, eller MULTILINESTRING. 
+        Kan også forekomme POLYGON eller MULTIPOLYGON. 
+        Anbefaling er at det brukes bibliotek som støtter alle WKT-typene
+        """
+        
+        return self.data['lokasjon'][geometritype]
         
     def lokasjon(self, omradetype):
         """Returnerer navnet på en angitt områdetype, for eksempel kommune
@@ -159,6 +174,7 @@ def query(path, params=''):
     headers = {'accept': 'application/vnd.vegvesen.nvdb-v1+json'}
     
     r = requests.get(url, headers=headers, params=params, verify=False)
+    
 
     if r.status_code == requests.codes.ok:
         return r.json()
