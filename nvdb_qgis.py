@@ -1,6 +1,6 @@
     
 def lag(sted, vegkategori, navn):
-    api = 'http://vegnett.vegdata.no/nvdb/api/vegnett/'
+    api = 'http://www.vegvesen.no/nvdb/api/vegnett/'
     uri = api+sted+'.json?kategori='+vegkategori
     
     lag = QgsVectorLayer(uri, navn, "ogr")
