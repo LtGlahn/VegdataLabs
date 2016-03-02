@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 """Henter bruer fra NVDB og sjekker om navnet på brua finnes i Sentralt 
-    stedsnavnregister (SSR).""" 
+    stedsnavnregister (SSR). Lagrer treffliste til CSV-fil""" 
 
 import nvdb
 import xmltodict
 import requests
 import json
 from shapely.wkt import loads as loadswkt  
-import pdb
+# import pdb
 import re
+import pyproj  
 
 
 def askSSR( navn, bbox): 
     """Slår opp i SSR på strengen navn. Wildcard-søk er støttet, ref
     SSR-dokumentasjonen. bbox er en shapely boundingBox-element, dvs en 
-    liste med 4 koordinater (nedre venstre øst/nord og øvre høyre øst/nord)"""
+    liste med 4 koordinater (nedre venstre øst/nord og øvre høyre øst/nord)
+    
+    Plukker ut et koordinatpunkt og legger inn som E, N i UTM sone 32
+    (epsg:25832)"""
     
     
     url = 'https://ws.geonorge.no/SKWS3Index/ssr/sok'
@@ -128,19 +132,24 @@ def hentNvdbBruer(lengde=1000):
                 
                 match = 'FLERE?'
             
+            # Reprojiserer, 
+            utm33 = pyproj.Proj('+init=EPSG:25833')
+            utm32 = pyproj.Proj('+init=EPSG:25832')
+            x2,y2 = pyproj.transform(utm33, utm32, pt.x, pt.y) 
+            
             liste = [ nvdbObj.data['lokasjon']['fylke']['nummer'], 
                         brunavn,
                         int(round( float( nvdbObj.egenskap(egenskapstype=1313)))) , # Lengde
-                        int(round(pt.x)), int(round(pt.y)),                # Nord/øst koordiant
+                        int(round(x2)), int(round(y2)),                # Nord/øst koordiant
                         nvdbObj.id, match ]
             
             resultat.append( liste) 
     
-    # nvdb.csv_skriv( 'brunavn.csv', resultat) 
+    nvdb.csv_skriv( 'brunavn.csv', resultat) 
 
 if __name__ == '__main__': 
     
-    hentNvdbBruer( lengde=1800)
+    hentNvdbBruer( lengde=100)
     
     # sluppen = nvdb.Objekt( nvdb.query( '/vegobjekter/objekt/272765437') )
     # svin = nvdb.Objekt( nvdb.query( '/vegobjekter/objekt/272299150') )
