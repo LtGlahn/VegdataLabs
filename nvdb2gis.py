@@ -7,6 +7,25 @@ import json
 from shapely.wkt import loads
 from shapely.geometry import mapping
 import io
+import pyshp 
+
+def vegreferanse2shp(): 
+
+    objektTyper =  [{
+        "id": 532,
+        "filter": [{
+            "type": "Konnekteringslenke",
+            "operator": "!=",
+            "verdi": ["Konnekteringslenke"]
+        }]
+    }]
+    
+    lokasjon = {
+        "vegreferanse": ["E"],
+        "bbox": "262645,7027798,269974,7032413"
+    }
+
+    vegref = nvdb.query_search( objektTyper, lokasjon = lokasjon)
 
 def hentNvdbBruer(lengde=1000):
     
@@ -82,4 +101,6 @@ def hentNvdbBruer(lengde=1000):
 
 if __name__ == '__main__': 
     
-    hentNvdbBruer( lengde=1000)
+    # hentNvdbBruer( lengde=1000)
+    vegreferanse2shp()
+    
